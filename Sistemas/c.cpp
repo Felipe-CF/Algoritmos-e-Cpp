@@ -4,7 +4,7 @@
 #include<sys/stat.h>
 using namespace std;
 
-// faço  verificações referentes a abertura do arquivo, depois pego suas informações e obtenho o tamanho dele em bytes
+// faço verificações referentes a abertura do arquivo, depois pego suas informações e obtenho o tamanho dele em bytes
 // isso vai ajudar na hora de usar as funções read() e write() mais abaixo
 off_t tamanho_arqv(int descritor_de_arquivo){
         struct stat st; // declaro o struct stat para pode obter informações sobre o arquivo em especifíco
@@ -36,46 +36,16 @@ int main(int argc, char* argv[]){
         // pego o tamanho do arquivo - usei o off_t por ser um inteiro de 64 bits 
         // (um margem boa para armazenar o tamanho)
         off_t tamanho_origem = tamanho_arqv(id_origem);
-        
-        // if(id_origem == 0){
-        //     cout << 
-        //     return 1;
-        // }
+    
+        if(id_origem == 0)
+            return 1;
 
         char* conteudo_origem = new char[tamanho_origem];
         ssize_t conteudo_lido = read(id_origem, conteudo_origem, tamanho_origem);
         // para essa função é necessário o descritor, um array para armazenar o conteúdo do arquivo
         // e o tamanho desse array para poder ler o conteúdo do arquivo
-        //cout <<  conteudo_origem[0] << endl;
-
-        // checagem do retorno do read()
-        if(conteudo_lido == -1){ // -1 indica problema na leitura do arquivo
-            cout << "Problema na leitura do arquivo de origem" << endl;
-            delete [] conteudo_origem;
-            close(id_origem); // arquivo de origem é fechado após a leitura dele
-            return 1;
-        }
-        
+        cout <<  conteudo_origem << endl;
         close(id_origem); // arquivo de origem é fechado após a leitura dele
-// ---     agora "repito" os  passos acima, mas para o arquivo destino (gravar) ---
-
-        int id_destino = open(argv[2], O_WRONLY); 
-        if(id_destino == -1){
-            cout << "arquivo de origem não foi " << endl;
-             delete [] conteudo_origem;
-             return 1;
-        }
-
-        ssize_t id_gravado = write(id_destino, conteudo_origem, conteudo_lido);
-
-        if(id_gravado == -1){
-            cout << "arquivo de destino não pode ser gravado" << endl;
-            delete [] conteudo_origem;
-            close(id_destino); // arquivo de origem é fechado após a leitura dele
-            return 1;
-        }
-
-        delete[] conteudo_origem;
-        close(id_destino);
     }
 }
+
