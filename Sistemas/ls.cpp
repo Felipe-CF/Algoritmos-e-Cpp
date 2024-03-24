@@ -32,9 +32,12 @@ int main(int argc, char* argv[]){
     // ele tentou acessar um local de memória não permitido (um outro diretorio?)
     // imagino que o opnedir() limite "por onde pode andar" com readdir() a somente o caminho passado
     // o segmentation quando ocorre retorna NULL
+    dir = readdir(diretorio);
+    dir = readdir(diretorio);
         if(dir != NULL){
-            while((dir = readdir(diretorio)) != NULL)
-                cout << dir->d_name << " ";
+            while((dir = readdir(diretorio)) != NULL){
+                    cout << dir->d_name << " ";
+            }
             cout << endl; 
         }else{
             cout << "Diretorio não pode ser acessado" << endl;
