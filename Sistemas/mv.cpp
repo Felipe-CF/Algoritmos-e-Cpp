@@ -4,8 +4,9 @@
 #include <cstring>
 #include <fcntl.h>
 #include<sys/stat.h>
-
 using namespace std;
+
+
 off_t tamanho_arqv(int descritor_de_arquivo){
         struct stat st; // declaro o struct stat para pode obter informações sobre o arquivo em especifíco
         int arquivo_info = fstat(descritor_de_arquivo, &st); // usei o descritor para acessar o arquivo que eu queria as infos
@@ -19,8 +20,29 @@ off_t tamanho_arqv(int descritor_de_arquivo){
         // a quantidade de bytes do tamanho do arquivo; será necessário como parametro na função read()
 }
 
-// Implementação: decidi criar um novo e copiar o conteúdo do original
-// tanto para renomear quanto para mover ele de lugar
+int checa_diretorio(string diretorio, string caminho){
+    char* caminho = diretorio;
+    diretorio = diretorio[diretorio.length()-1]; 
+
+
+        if(diretorio == "/"){ // foi passado apenas o caminho de um diretório
+            int muda_dir = chdir(caminho); // mudo para ele
+            char buffer[1024];
+            char* caminho = getcwd(buffer, 1024);
+            if(errno == ENOENT){ // trato o erro do diretorio ter sido passado errado
+                cout << "diretório informado não existe " << endl;
+                return 1;
+            }
+            cout << caminho << endl;
+        }
+        
+        char buffer[1024];
+        char* caminho = getcwd(buffer, 1024);
+        cout << caminho << endl;
+    return 1;
+}
+
+
 int main(int argc, char* argv[]){
     if(argc == 1){ // nenhum parametro passado
         cout << "mv: missing file operand\n" << "Try 'mv --help' for more information."<< endl;
@@ -49,26 +71,34 @@ int main(int argc, char* argv[]){
         // 2- se voce passar 1 nome e um diretório ele será movido
         // 3- se  ||    ||   1  ||  e caminho para um arquivo existente ele sobrescreve este último
         // 4- ||  ||    ||   1  ||  e    ||    ||  ||   ||  não  ||      ||  move e altera o nome do arquivo
+
+        
+        // checando se um diretorio foi passado, ao inves do caminho de um arquivo
         
 
+
+
+        // a partir daqui estamos em 2 situações:
+        // 1- o diretorio passado com destino existe e o chdir() funcionou
+        // 2- o objetivo é mudar o nome do arquivo 
         int arqv_origem = open(argv[1], O_RDONLY); // verifico se o 1° arquivo passsado realmente existe
         if(errno == ENOENT){ 
             cout << "mv: cannot stat '" << argv[1] << "': No such file or directory" << endl;
             return 1;
         }
-        int arqv_destino;
-        arqv_destino = open(argv[2], O_RDWR); // verifico se o 2° arquivo passsado realmente existe
+        
+        int arqv_destino1 = open(argv[2], O_RDWR | O_CREAT); // verifico se o 2° arquivo passsado realmente existe
         // o erro ENOENT informa que "No such file or directory"
         // nesse caso o O_CREATE me garante que o caminho passado foi errado
         // porque se estivesse correto ele teria criado um arquivo no diretorio de destino
         // se estiver correto, o arquivo com o nome novo já é criado
-        if(arqv_destino != -1){  
+        if(arqv_destino1 != -1){  
             cout << "Já existe um arquivo com esse nome no diretorio" << endl;
             return 1;
         }
-        close(arqv_destino);
+        close(arqv_destino1);
 
-        arqv_destino = creat(argv[2], 0644); // O 2° arquivo passsado não existe, então eu crio ele
+        int arqv_destino = creat(argv[2],  O_RDWR); // O 2° arquivo passsado não existe, então eu crio ele
         if(arqv_destino == -1){  
             cout << "mv: cannot stat '" << argv[1] << "': No such file or directory" << "1" << endl;
             return 1;
