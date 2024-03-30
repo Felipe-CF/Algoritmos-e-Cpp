@@ -40,8 +40,9 @@ int main(int argc, char* argv[]){
 
     ssize_t ler = read(open(argv[1], O_RDONLY), cont, tam); // leio o conteudo e armazeno
 
-    for(off_t i = 0; i < tam; i++){ //imprimo no terminal o conteudo
+    for(off_t i = 0; i < tam; i++) //imprimo no terminal o conteudo
             cout << cont[i]; 
-    }
+    close(arqv);
+    delete[] cont;
     return 0;
 }

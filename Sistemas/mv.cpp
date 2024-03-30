@@ -7,19 +7,6 @@
 #include<sys/stat.h>
 using namespace std;
 
-off_t tamanho_arqv(int descritor_de_arquivo){
-        struct stat st; // declaro o struct stat para pode obter informações sobre o arquivo em especifíco
-        int arquivo_info = fstat(descritor_de_arquivo, &st); // usei o descritor para acessar o arquivo que eu queria as infos
-        if(arquivo_info == -1){// se o valor for -1 significa que houve erro
-            cout << "Não foi possível ler informações do arquivo de origem" << endl;
-            return 1;
-        } 
-        // foi possível obter informações!
-        return st.st_size; 
-        // o valor armazenado aqui é referente
-        // a quantidade de bytes do tamanho do arquivo; será necessário como parametro na função read()
-}
-
 
 // não funciona mover diretorio
 // também não quero saber o porque, são 01hrs da sexta-feira santa
